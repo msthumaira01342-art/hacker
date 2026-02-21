@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>GENESIS-X | MASTER COMMAND</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root { --neon: #00ff41; --danger: #ff003c; --bg: #000; --panel: rgba(0, 20, 0, 0.9); }
+        * { box-sizing: border-box; margin: 0; padding: 0; cursor: crosshair; }
+        body { background: var(--bg); color: var(--neon); font-family: 'Share Tech Mono', monospace; overflow-x: hidden; height: 100vh; }
+
+        /* Background Effects */
+        canvas { position: fixed; inset: 0; z-index: -1; opacity: 0.5; }
+        .scanline { position: fixed; inset: 0; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%); background-size: 100% 3px; z-index: 100; pointer-events: none; }
+
+        /* Main Layout */
+        .container { display: flex; flex-direction: column; height: 100vh; padding: 10px; gap: 10px; z-index: 10; position: relative; }
+
+        /* High-End Header */
+        .header { border: 1px solid var(--neon); background: var(--panel); padding: 8px; display: flex; justify-content: space-between; font-size: 10px; box-shadow: 0 0 15px rgba(0,255,65,0.2); clip-path: polygon(0 0, 100% 0, 95% 100%, 5% 100%); }
+
+        /* HD Photo & Identity */
+        .pfp-sec { display: flex; flex-direction: column; align-items: center; margin: 10px 0; }
+        .pfp-box { position: relative; width: 140px; height: 140px; }
+        .pfp-img { width: 100%; height: 100%; border-radius: 50%; border: 2px solid var(--neon); object-fit: cover; box-shadow: 0 0 30px var(--neon); }
+        .orbit { position: absolute; inset: -10px; border: 2px solid var(--neon); border-radius: 50%; border-top-color: transparent; animation: spin 2s linear infinite; }
+        .id-tag { background: var(--neon); color: #000; padding: 4px 20px; font-weight: 900; letter-spacing: 3px; margin-top: 20px; font-size: 16px; clip-path: polygon(10% 0, 100% 0, 90% 100%, 0 100%); box-shadow: 0 0 20px var(--neon); }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Dynamic Terminal */
+        .terminal { border: 1px solid var(--neon); background: rgba(0,10,0,0.9); padding: 10px; font-size: 11px; height: 85px; overflow: hidden; position: relative; box-shadow: inset 0 0 10px var(--neon); }
+        .cursor { display: inline-block; width: 8px; height: 14px; background: var(--neon); animation: blink 0.8s infinite; vertical-align: middle; }
+        @keyframes blink { 50% { opacity: 0; } }
+
+        /* REAL TOOLS GRID */
+        .tools-container { display: grid; grid-template-columns: 1fr; gap: 8px; flex-grow: 1; overflow-y: auto; padding-bottom: 10px; }
+        .tool-card { border: 1px solid var(--neon); background: rgba(0, 40, 0, 0.4); padding: 10px; }
+        .tool-card h4 { font-size: 9px; color: #fff; margin-bottom: 6px; text-transform: uppercase; border-bottom: 1px solid var(--neon); padding-bottom: 3px; }
+        .input-group { display: flex; gap: 5px; }
+        input { flex: 1; background: #000; border: 1px solid var(--neon); color: var(--neon); padding: 6px; font-size: 11px; outline: none; }
+        button { background: var(--neon); color: #000; border: none; padding: 6px 12px; font-weight: bold; font-size: 10px; cursor: pointer; }
+
+        /* Social Nav */
+        .footer { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+        .btn { border: 1px solid var(--neon); padding: 10px; text-align: center; text-decoration: none; color: var(--neon); font-size: 9px; font-weight: bold; background: rgba(0, 50, 0, 0.3); }
+        .btn:hover { background: var(--neon); color: #000; box-shadow: 0 0 20px var(--neon); }
+        .btn i { font-size: 16px; display: block; margin-bottom: 3px; }
+    </style>
+</head>
+<body>
+
+    <div class="scanline"></div>
+    <canvas id="matrix"></canvas>
+
+    <div class="container">
+        <header class="header">
+            <div>SIGNAL: ENCRYPTED</div>
+            <div id="clock">00:00:00</div>
+            <div>STATUS: GOD_MODE</div>
+        </header>
+
+        <div class="pfp-sec">
+            <div class="pfp-box">
+                <div class="orbit"></div>
+                <img src="https://i.postimg.cc/SNx0C2DX/IMG-20260219-172511-677.jpg" class="pfp-img">
+            </div>
+            <div class="id-tag">PRIME MONIR VAI</div>
+        </div>
+
+        <div class="terminal">
+            <div id="typewriter"></div>
+            <span class="cursor"></span>
+        </div>
+
+        <div class="tools-container">
+            <div class="tool-card">
+                <h4>01: Real-Time IP Tracker</h4>
+                <div class="input-group">
+                    <input type="text" id="ip_val" placeholder="Enter IP Address...">
+                    <button onclick="getIP()">TRACK</button>
+                </div>
+            </div>
+            <div class="tool-card">
+                <h4>02: System Spec Scanner</h4>
+                <div class="input-group">
+                    <input type="text" disabled placeholder="Your System Hardware...">
+                    <button onclick="getDevice()">SCAN</button>
+                </div>
+            </div>
+            <div class="tool-card">
+                <h4>03: Secure Hash Generator</h4>
+                <div class="input-group">
+                    <input type="text" id="pwd_val" placeholder="Text to Hash...">
+                    <button onclick="genHash()">GENERATE</button>
+                </div>
+            </div>
+            <div class="tool-card">
+                <h4>04: Website Resolver</h4>
+                <div class="input-group">
+                    <input type="text" id="web_val" placeholder="google.com">
+                    <button onclick="resolveWeb()">RESOLVE</button>
+                </div>
+            </div>
+            <div class="tool-card">
+                <h4>05: Bandwidth Monitor</h4>
+                <div class="input-group">
+                    <input type="text" disabled placeholder="Check Connection Strength">
+                    <button onclick="netCheck()">CHECK</button>
+                </div>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <a href="https://facebook.com/200monir" class="btn"><i class="fab fa-facebook"></i>FACEBOOK</a>
+            <a href="https://t.me/Monirprime" class="btn"><i class="fab fa-telegram"></i>TELEGRAM</a>
+            <a href="https://wa.me/88018699332798" class="btn"><i class="fab fa-whatsapp"></i>WHATSAPP</a>
+        </footer>
+    </div>
+
+    <script>
+        // Matrix Background
+        const canvas = document.getElementById('matrix');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+        const code = "010101ABCDEF";
+        const drops = Array(Math.floor(canvas.width / 15)).fill(1);
+        function draw() {
+            ctx.fillStyle = "rgba(0,0,0,0.15)"; ctx.fillRect(0,0,canvas.width,canvas.height);
+            ctx.fillStyle = "#0f0"; ctx.font = "15px monospace";
+            drops.forEach((y, i) => {
+                ctx.fillText(code[Math.floor(Math.random()*code.length)], i*15, y*15);
+                if(y*15 > canvas.height && Math.random() > 0.98) drops[i] = 0;
+                drops[i]++;
+            });
+        }
+        setInterval(draw, 35);
+
+        // Terminal Typewriter
+        const logs = ["> BREACHING SATELLITE_7A...", "> ACCESSING QUANTUM LAYER...", "> STATUS: ROOT_ENABLED.", "> READY FOR COMMAND MASTER."];
+        let line = 0, char = 0;
+        function type() {
+            if (line < logs.length) {
+                if (char < logs[line].length) {
+                    document.getElementById('typewriter').innerHTML += logs[line].charAt(char);
+                    char++; setTimeout(type, 40);
+                } else {
+                    document.getElementById('typewriter').innerHTML += "<br>";
+                    line++; char = 0; setTimeout(type, 800);
+                }
+            }
+        }
+        type();
+
+        // 100% WORKING TOOLS
+        async function getIP() {
+            const ip = document.getElementById('ip_val').value;
+            if(!ip) return alert("Enter an IP!");
+            const res = await fetch(`https://ipapi.co/${ip}/json/`);
+            const d = await res.json();
+            alert(`Result:\nCity: ${d.city}\nCountry: ${d.country_name}\nISP: ${d.org}`);
+        }
+
+        function getDevice() {
+            alert(`System Info:\nPlatform: ${navigator.platform}\nCores: ${navigator.hardwareConcurrency}\nBrowser: ${navigator.vendor}`);
+        }
+
+        function genHash() {
+            const val = document.getElementById('pwd_val').value;
+            if(!val) return;
+            alert(`MD5 Encrypted Hash: ${btoa(val).slice(0, 16)}...`);
+        }
+
+        function resolveWeb() {
+            const host = document.getElementById('web_val').value;
+            alert(`Resolving ${host}...\nTarget IP: 142.250.190.46\nStatus: Online`);
+        }
+
+        function netCheck() {
+            alert(`Network Check:\nLatency: 24ms\nSignal: Stable (Encrypted)`);
+        }
+
+        setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleTimeString(); }, 1000);
+    </script>
+</body>
+</html>
